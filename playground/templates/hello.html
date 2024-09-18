@@ -5,8 +5,12 @@
     <title>Title</title>
 </head>
 <body>
-<h2>
-    Sey hello
+{% if name.capitalize == 'Eugene' %}
+    <h2>
+    Say hello, {{ name.upper }}
 </h2>
+{% else %}
+    <h3>Helo, rowed!!</h3>
+{% endif %}
 </body>
 </html>
