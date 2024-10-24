@@ -2,20 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Order</title>
 </head>
 <body>
 {% if name.capitalize == 'Eugene' %}
     <h2>
     Say hello, {{ name.upper }}
-        {% if product %}<li>{{ product.title|capfirst }}</li>{% endif %}
 </h2>
     
 <ul> 
 {% for product in products %}
     <li>Title: {{product.title}} </li>
-{#    <li>Title: {{product.title}} </li>#}
-    <li>{{product}} </li>
+    <li>{{product.slug|slugify|upper}} </li>
 {% endfor %}
 </ul>
 {% else %}
