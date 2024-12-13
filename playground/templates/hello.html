@@ -15,7 +15,13 @@
 {% for product in products %}
     <li>Title: {{product.title}} </li>
 {#    <li>Title: {{product.title}} </li>#}
-    <li>{{product}} </li>
+    <li>{{product}} - {{ product.collection.title }} </li>
+{% endfor %}
+</ul>
+    
+<ul> 
+{% for order in orders %}
+    <li>{{order.id}}: {{ order.customer.first_name }} </li>
 {% endfor %}
 </ul>
 {% else %}
