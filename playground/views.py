@@ -1,15 +1,32 @@
-from django.shortcuts import render
+from django.db.models import Q, F, Value, FloatField, Func
+from django.db.models.aggregates import Count, Min, Max, Avg, Sum
+from django.db.models.functions import Concat
 from django.http import HttpResponse
-from django.db.models import Q, F
-from store.models import Product, OrderItem, Order
+from django.shortcuts import render
+from store.models import Product, OrderItem, Order, Customer
 
 
 # Create your views here.
 def hello(request):
     queryset = Product.objects.only('id', 'title')
     # queryset = Product.objects.defer('description') - 'description' will be excluded
-    print(queryset)
-    return render(request, 'hello.html', {'name': 'eugene'})
+    customers = Customer.objects.annotate(
+        full_name=Value('eugene'),
+        is_new=Value(True),
+        new_id=F('id') * 10)
+    # discount_price=F('order__orderitem__product__price') * 0.75,
+    # output_field=FloatField())
+
+    # fulL_name_customers = Customer.objects.annotate(
+    #     full_name=Func(F('first_name'), Value(' '), F('last_name'), function='CONCAT')
+    # )
+    fulL_name_customers = Customer.objects.annotate(
+        full_name=Concat('first_name',  Value(' '), 'last_name')
+    )
+
+    print(customers)
+    return render(request, 'hello.html', {'name':
+                                              fulL_name_customers[0].full_name})
     # return HttpResponse('<h2>Hello<h2>')
 
 
@@ -25,7 +42,8 @@ def get_products(request):
     # queryset = Product.objects.order_by('price', '-description').reverse()[:5]
     # queryset = Product.objects.values('id', 'title', 'collection__title')
     # queryset = Product.objects.select_related('collection').all()  #  INNER JOIN "collection"
-    queryset = Product.objects.prefetch_related('promotions').select_related('collection').all()  #  INNER JOIN, use 'prefetch' when have many-to-many relationship
+    queryset = Product.objects.prefetch_related('promotions').select_related(
+        'collection').all()  # INNER JOIN, use 'prefetch' when have many-to-many relationship
     # queryset = Product.objects.filter(id__exact=1).first()
     # product = Product.objects.order_by('price')[0]
     # product = Product.objects.earliest('price')
@@ -40,7 +58,17 @@ def get_products(request):
 
 
 def get_order_items(request):
-    queryset = Product.objects.filter(id__in=OrderItem.objects.values('product_id').distinct()).order_by('-price')
+    queryset = Product.objects.filter(
+        id__in=OrderItem.objects.values('product_id').distinct()).order_by('-price')
     if queryset:
         return render(request, 'order_items.html', {'name': 'Eugene',
                                                     'products': list(queryset)})
+
+
+def get_aggregations(request):
+    queryset = (Product.objects.filter(collection__id=1).aggregate(count=Count('id'),
+                                                                   min_price=Min('price'),
+                                                                   max_price=Max('price'),
+                                                                   avg_price=Avg('price')))
+    return render(request, 'aggregations.html', {'name': 'Eugene',
+                                                 'result': queryset})

@@ -8,13 +8,12 @@
 {% if name.capitalize == 'Eugene' %}
     <h2>
     Say hello, {{ name.upper }}
-        {% if product %}<li>{{ product.title|capfirst }}</li>{% endif %}
-</h2>
-    
+    </h2>
+        {% if product %}<p>{{ product.title|capfirst }}</p>{% endif %}
+
 <ul> 
 {% for product in products %}
     <li>Title: {{product.title}} </li>
-{#    <li>Title: {{product.title}} </li>#}
     <li>{{product}} - {{ product.collection.title }} </li>
 {% endfor %}
 </ul>
@@ -24,8 +23,9 @@
     <li>{{order.id}}: {{ order.customer.first_name }} </li>
 {% endfor %}
 </ul>
+
 {% else %}
-    <h3>Helo, people!!</h3>
+    <h3>Helo, {{name}}!!</h3>
 {% endif %}
 
 </body>
