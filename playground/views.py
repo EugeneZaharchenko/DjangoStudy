@@ -1,32 +1,51 @@
-from django.db.models import Q, F, Value, FloatField, Func
+from django.db.models import Q, F, Value, FloatField, Func, ExpressionWrapper
 from django.db.models.aggregates import Count, Min, Max, Avg, Sum
 from django.db.models.functions import Concat
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.contrib.contenttypes.models import ContentType
 from store.models import Product, OrderItem, Order, Customer
+from tags.models import TaggedItem
 
 
 # Create your views here.
 def hello(request):
+    content_type = ContentType.objects.get_for_model(Product)
+    tags_set = TaggedItem.objects \
+        .select_related('tag') \
+        .filter(content_type=content_type,
+                object_id=1
+    )
+
     queryset = Product.objects.only('id', 'title')
     # queryset = Product.objects.defer('description') - 'description' will be excluded
     customers = Customer.objects.annotate(
         full_name=Value('eugene'),
         is_new=Value(True),
         new_id=F('id') * 10)
-    # discount_price=F('order__orderitem__product__price') * 0.75,
-    # output_field=FloatField())
+
+    discounted_price = ExpressionWrapper(
+        F('price') * 0.75,
+        output_field=FloatField())
+    discounted_query = Product.objects.annotate(
+        discounted_price=discounted_price)
 
     # fulL_name_customers = Customer.objects.annotate(
     #     full_name=Func(F('first_name'), Value(' '), F('last_name'), function='CONCAT')
     # )
     fulL_name_customers = Customer.objects.annotate(
-        full_name=Concat('first_name',  Value(' '), 'last_name')
+        full_name=Concat('first_name', Value(' '), 'last_name')
+    )
+    queryset = Customer.objects.annotate(
+        orders_count=Count('order')
     )
 
-    print(customers)
+    # print(customers)
+    # print(queryset)
+    print(list(discounted_query))
     return render(request, 'hello.html', {'name':
-                                              fulL_name_customers[0].full_name})
+                                              fulL_name_customers[0].full_name,
+                                          'tags': list(tags_set)})
     # return HttpResponse('<h2>Hello<h2>')
 
 
