@@ -10,12 +10,7 @@ from tags.models import TaggedItem
 
 # Create your views here.
 def hello(request):
-    content_type = ContentType.objects.get_for_model(Product)
-    tags_set = TaggedItem.objects \
-        .select_related('tag') \
-        .filter(content_type=content_type,
-                object_id=1
-    )
+    tags_set = TaggedItem.objects.get_tags_for(Product, 1)
 
     queryset = Product.objects.only('id', 'title')
     # queryset = Product.objects.defer('description') - 'description' will be excluded
