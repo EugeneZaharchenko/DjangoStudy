@@ -24,6 +24,18 @@
 {% endfor %}
 </ul>
 
+{% if tags %}
+    <ul>
+    {% for tag in tags %}
+        <li>{{ tag.label }} </li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+{% if collection %}
+        <p>{{ collection.title }} </p>
+{% endif %}
+
 {% else %}
     <h3>Helo, {{name}}!!</h3>
 {% endif %}

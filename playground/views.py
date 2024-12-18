@@ -4,7 +4,7 @@ from django.db.models.functions import Concat
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
-from store.models import Product, OrderItem, Order, Customer
+from store.models import Product, OrderItem, Order, Customer, Collection
 from tags.models import TaggedItem
 
 
@@ -86,3 +86,13 @@ def get_aggregations(request):
                                                                    avg_price=Avg('price')))
     return render(request, 'aggregations.html', {'name': 'Eugene',
                                                  'result': queryset})
+
+
+def create_collection(request):
+    # collection = Collection()
+    # collection.title = 'Video Games'
+    # collection.featured_product = Product(pk=3)
+    collection = Collection.objects.create(title='Video Games', featured_product_id=3)
+    collection.save()
+    return render(request, 'hello.html', {'name': 'Eugene',
+                                          'collection': collection})
