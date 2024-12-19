@@ -96,3 +96,16 @@ def create_collection(request):
     collection.save()
     return render(request, 'hello.html', {'name': 'Eugene',
                                           'collection': collection})
+
+def update_collection(request):
+    # collection = Collection(pk=5) - WRONG way
+    # collection.title = 'GameZ'
+
+    # collection = Collection.objects.get(pk=5) - Better, but not optimal
+    # collection.featured_product_id = None
+    # collection.save()
+
+    collection = Collection.objects.filter(pk=5).update(featured_product_id=None) # BEST way !
+
+    return render(request, 'hello.html', {'name': 'Eugene',
+                                          'collection': collection})
