@@ -17,7 +17,7 @@ class Flower(models.Model):
 
 
 class Bouquet(models.Model):
-    shop = models.Manager()
+    # shop = models.Manager()
     fresh_period = models.DurationField(default=timedelta(days=5), null=True,
                                         help_text="Use this field when you need"
                                                   " to have information about "
