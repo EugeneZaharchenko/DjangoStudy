@@ -18,3 +18,4 @@ requests==2.25.1
 six==1.16.0
 SQLAlchemy==2.0.35
 sqlparse==0.5.1
+django-durationwidget==1.0.5

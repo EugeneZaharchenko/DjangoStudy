@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'tags',
     'likes',
     'flowers',
+    'durationwidget',
 ]
 
 MIDDLEWARE = [
