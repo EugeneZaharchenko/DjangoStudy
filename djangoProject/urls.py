@@ -19,10 +19,13 @@ from django.conf import settings
 from django.urls import path, include
 from debug_toolbar.toolbar import debug_toolbar_urls
 
+admin.site.site_header = "Ultimate Django Series: project1"
+admin.site.index_title = "CodeWithMoch Django admin site"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('playground/', include('playground.urls')),
-
+    path('pg/', include('playground.urls')),
+    path('flowers/', include('flowers.urls')),
 ]
 
 if settings.DEBUG:
